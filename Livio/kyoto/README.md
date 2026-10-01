@@ -38,7 +38,7 @@ glyphs** — see Requirements, because they are not optional here.
 |---|---|---|---|
 | `kyoto.sh` | `~/.claude/statusline/themes/` | ours | the theme the framework loads |
 | `kyoto.py` | `vendor/livio/` | **Livio's, verbatim** | the valley |
-| `kyotogif.py` | `vendor/livio/` | **Livio's, verbatim** | **not optional** — `kyoto.py` does `import kyotogif as art` and pulls twenty art constants, plus `noise`, `shade` and `mix`, out of it. Its `build_all` generator is never reached. |
+| `kyotogif.py` | `vendor/livio/` | **Livio's, verbatim** | **not optional** — `kyoto.py` does `import kyotogif as art` and pulls sixteen art constants, plus `noise`, `shade` and `mix`, out of it. Its `build_all` generator is never reached. |
 | `preview.ansi` | — | — | a real render in colour, 100 columns. `cat preview.ansi` |
 | `install.sh` | — | — | copies everything into place and selects it |
 
@@ -178,7 +178,7 @@ standing in for the valley, plus the two HUD rows with the meter rendered as
 - **bash 4.2+** for the framework.
 - **Cost: about 284 ms per render** at 100 columns on this machine, measured
   over five warm renders, including Python startup. It is the most expensive of
-  the four — the octant packer runs an exhaustive best-pair colour search per
+  the three — the octant packer runs an exhaustive best-pair colour search per
   cell. The refresh is about once a second, so it fits, with less headroom than
   the others.
 - Platform-neutral. The Windows Terminal background version of the valley is

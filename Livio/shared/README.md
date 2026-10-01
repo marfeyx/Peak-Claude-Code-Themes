@@ -6,16 +6,16 @@ duplicates any of it, and every `install.sh` copies this directory alongside its
 own modules.
 
 Everything here is installed into `~/.claude/statusline/vendor/livio/`, which is
-a flat directory shared by all four themes. Installing a second theme overwrites
+a flat directory shared by all three themes. Installing a second theme overwrites
 these five files with identical content.
 
 | File | Whose | What it is |
 |---|---|---|
-| `common.py` | **Livio's, verbatim** | `Canvas`, `Pixels` (1×2 half-block), `OctantPixels` (2×4), colour and formatting helpers, `git_branch`, `weekly_spend`. Imported by all four themes. |
+| `common.py` | **Livio's, verbatim** | `Canvas`, `Pixels` (1×2 half-block), `OctantPixels` (2×4), colour and formatting helpers, `git_branch`, `weekly_spend`. Imported by all three themes. |
 | `octants.py` | **Livio's, verbatim** | a generated 256-entry glyph table for U+1CD00…U+1CDE5, imported lazily by `OctantPixels._paint`. Needed by `kyoto`, `vice` and `aquarium` in octant mode. |
 | `gifwriter.py` | ours | an **inert stub**. See below. |
 | `render.py` | ours | the bridge. The whole adaptation lives here. |
-| `wrapper.sh` | ours | the bash launcher that all four `themes/*.sh` files source. |
+| `wrapper.sh` | ours | the bash launcher that all three `themes/*.sh` files source. |
 
 `common.py` and `octants.py` are byte-identical to
 `../upstream/statuslines/`. Check with `cmp common.py ../upstream/statuslines/common.py`.

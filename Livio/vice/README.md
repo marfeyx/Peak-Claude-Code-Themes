@@ -59,9 +59,12 @@ of picture.
 
 Reading down:
 
-1. **The sky,** a gradient interpolated between eight keyed states — deep night,
-   first light, dawn, midday haze, golden hour, sunset, afterglow, dusk — chosen
-   from the hour with 1.1 hours of fade either side of the sun crossing. **Stars**
+1. **The sky,** a gradient interpolated between the eleven keyed states of
+   `SKY_KEYS` — deep night, first light, dawn, early morning, late morning,
+   afternoon, golden hour, sunset, afterglow, dusk, and a wrap back to night —
+   chosen from the hour with 1.1 hours of fade either side of the sun crossing.
+   (His module docstring still advertises the eight it started with, including a
+   "midday haze" key the table no longer has. The table is the truth.) **Stars**
    after dusk, in four tints, placed by a hash so they do not twinkle randomly.
 
    Measured across three pinned hours on the same frame, counting distinct
@@ -168,7 +171,7 @@ default request is 12:
 | 37 – 39 | 13 |
 | ≥ 40 | 14 — full height, and it stops growing |
 
-**The two HUD rows.** `vice` is the only one of the four with a shedding helper
+**The two HUD rows.** `vice` is the only one of the three with a shedding helper
 of its own upstream (`join_fit`), applied to the HUD, which is why these rows
 behave at every width even though his scenery did not:
 
@@ -210,7 +213,7 @@ stars survive — `WANTED ★★★☆☆ 47%` still reads.
   three-row text fallback.
 - **bash 4.2+** for the framework.
 - **Cost: about 264 ms per render** at 100 columns on this machine, measured over
-  five warm renders, including Python startup. Second most expensive of the four.
+  five warm renders, including Python startup. Second most expensive of the three.
   The refresh is about once a second, so it fits.
 - Platform-neutral. The Windows Terminal background version — 144 GIF bands, one
   per ten minutes of the day, so the sun visibly works down the sky behind your

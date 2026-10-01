@@ -75,7 +75,7 @@ Top to bottom:
 
 5. **Coral** along the floor, in four colours.
 
-6. **Fish,** drawn as sprites in three sizes and five colour schemes, swimming
+6. **Fish,** drawn as sprites in three sizes and six colour schemes, swimming
    a step per frame. They are clipped to stay under the waterline, so as the
    tank drains they are pushed down into a thinner and thinner band.
 
@@ -264,7 +264,7 @@ rm ~/.claude/statusline/themes/aquarium.sh
 ```
 
 Then `/sl <something-else>`. The modules under `vendor/livio/` are shared with
-`kyoto`, `vice` and `spectrum`; only remove `water*.py` if none of those are
+`kyoto` and `vice`; only remove `water*.py` if neither of those is
 installed either.
 
 ## Credits

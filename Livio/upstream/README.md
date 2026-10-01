@@ -4,14 +4,28 @@
 Livio recognises his own work and so the next delivery from him is a diff rather
 than an argument.
 
-Every file here is byte-identical to what he sent. Nothing has been edited,
-reformatted or renamed, with one exception: his `README.md` is stored as
-`README.md.orig` so it does not collide with this label. The shell scripts are
-stored without the execute bit, on purpose.
+Nothing here has been edited, reformatted or renamed, with one exception: his
+`README.md` is stored as `README.md.orig` so it does not collide with this
+label. `SHA256SUMS` lists every file as it stands; `sha256sum -c SHA256SUMS`
+from this directory checks it.
+
+That manifest pins the archive from the day it was taken forward. It is not
+proof of the delivery itself: no pristine copy of Livio's bundle and no
+checksum list from him survives on this machine, so *"byte-identical to what he
+sent"* rests on the archivist's word and nothing else. What can be checked, and
+is clean, is the internal cross-check — every shipped module `cmp`s equal to
+its original under `statuslines/`.
+
+The warning at the top of this file is the only safeguard there is. This tree
+sits on a drvfs mount of `C:`, which reports every file as mode `777`: the
+execute bit cannot be cleared here, and a `git add` would record these scripts
+as `100755`. `install.sh` and `sl-switch.sh` are executable whatever anyone
+intends. Do not run them.
 
 ```
 upstream/
   README.md          this label
+  SHA256SUMS         checksums of everything below, taken on archiving
   README.md.orig     his README
   install.sh         his installer
   sl-switch.sh       his /sl implementation
@@ -73,10 +87,10 @@ welcome.
 | `water2.py` | `../aquarium/water2.py` | verbatim; reached via `SL_AQUARIUM_PIXELS=octant` |
 | `watergif.py` | `../aquarium/watergif.py` | verbatim; `water.py` imports it for `SUB_LOOP_CS` and `sub_fits` |
 | `kyoto.py` | `../kyoto/kyoto.py` | verbatim |
-| `kyotogif.py` | `../kyoto/kyotogif.py` | verbatim; **not optional** — `kyoto.py` does `import kyotogif as art` and pulls twenty art constants out of it |
+| `kyotogif.py` | `../kyoto/kyotogif.py` | verbatim; **not optional** — `kyoto.py` does `import kyotogif as art` and pulls sixteen art constants out of it |
 | `vice.py` | `../vice/vice.py` | verbatim |
 | `vicegif.py` | **not shipped** | a pure generator; `vice.py` imports nothing but `common` |
-| `rgb.py` | `../spectrum/rgb.py` | verbatim, renamed theme only |
+| `rgb.py` | **not shipped** | his rainbow-rule theme; shipped once as `spectrum`, since withdrawn |
 
 Regenerating the background GIFs, if anyone ever wants them, means working in
 this directory with his real `gifwriter.py` — deliberately, by hand, and not

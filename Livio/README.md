@@ -1,6 +1,6 @@
 # Livio
 
-Four status line themes for the **Base Theme-switcher**, adapted from Livio's own
+Three status line themes for the **Base Theme-switcher**, adapted from Livio's own
 Python status line framework. His renderers do the drawing; everything in this
 folder that is not his is the layer that makes them fit this repo's engine.
 
@@ -9,9 +9,8 @@ folder that is not his is the layer that makes them fit this repo's engine.
 | `/sl 40` | [`aquarium`](aquarium/) | a tank whose water level is the context window you have left |
 | `/sl 41` | [`kyoto`](kyoto/) | a calm Kyoto valley — sakura, a waterfall, a slow river |
 | `/sl 42` | [`vice`](vice/) | a Vice City panorama on a day-night cycle, context as a wanted level |
-| `/sl 43` | [`spectrum`](spectrum/) | three information rows under a drifting rainbow rule |
 
-All four pass `check.sh` with **zero failing checks** at 30, 40, 50, 60, 80, 100,
+All three pass `check.sh` with **zero failing checks** at 30, 40, 50, 60, 80, 100,
 160 and 220 columns plus `NO_COLOR`.
 
 ## Layout
@@ -23,11 +22,10 @@ Livio/
   aquarium/            one folder per theme: wrapper, renderer, README, preview, installer
   kyoto/
   vice/
-  spectrum/
-  upstream/            Livio's delivery, byte-identical and unexecuted
+  upstream/            Livio's delivery, unedited and unexecuted
 ```
 
-Each theme folder is self-contained **except** for `shared/`, which all four
+Each theme folder is self-contained **except** for `shared/`, which all three
 import. That is the one place the Python lives; no module is duplicated between
 theme folders, and every `install.sh` copies `shared/` alongside its own modules.
 
@@ -53,7 +51,7 @@ cp kyoto/kyoto.py kyoto/kyotogif.py ~/.claude/statusline/vendor/livio/
 cp kyoto/kyoto.sh ~/.claude/statusline/themes/
 ```
 
-Then `/sl kyoto`. Installing all four is the same four files plus each theme's
+Then `/sl kyoto`. Installing all three is the same four files plus each theme's
 modules; they share one `vendor/livio/` directory and do not collide.
 
 `python3` is required — these are Python renderers behind a bash wrapper. Stdlib
@@ -67,22 +65,27 @@ import time, so a future delivery from him is a file copy rather than a merge.
 
 | Path | Whose | Note |
 |---|---|---|
-| `upstream/**` | **his** | the delivery as it arrived, byte-identical |
+| `upstream/**` | **his** | the delivery as it arrived, unedited; checksummed in `upstream/SHA256SUMS` |
 | `shared/common.py` | **his** | verbatim copy of `upstream/statuslines/common.py` |
 | `shared/octants.py` | **his** | verbatim; the generated 2×4 glyph table |
 | `aquarium/water.py`, `water2.py`, `watergif.py` | **his** | verbatim |
 | `kyoto/kyoto.py`, `kyotogif.py` | **his** | verbatim |
 | `vice/vice.py` | **his** | verbatim |
-| `spectrum/rgb.py` | **his** | verbatim |
 | `shared/render.py` | ours | the bridge: width, colour, clock, config safety |
-| `shared/wrapper.sh` | ours | the bash launcher all four wrappers source |
+| `shared/wrapper.sh` | ours | the bash launcher all three wrappers source |
 | `shared/gifwriter.py` | ours | an **inert stub** replacing his GIF writer |
 | `*/[theme].sh` | ours | the theme file the framework actually loads |
 | `*/install.sh`, `*/README.md`, `*/preview*.ansi` | ours | packaging |
 
 `shared/common.py` and `shared/octants.py` are byte-identical to
-`upstream/statuslines/`, as are all seven theme modules. `cmp` them if you want
+`upstream/statuslines/`, as are all six theme modules. `cmp` them if you want
 to check.
+
+What *cannot* be checked here is identity with the bundle Livio actually sent.
+No pristine copy of it and no checksum list from him survives on this machine,
+so `upstream/SHA256SUMS` only pins the archive from the day it was taken
+onwards. Treat "unedited" as the archivist's word, backed by a clean internal
+cross-check and nothing stronger. `upstream/README.md` says the same.
 
 ## What the adapter layer does
 
@@ -92,13 +95,13 @@ renderers do that this engine's linter would reject.
 
 - **Width.** He renders against `COLUMNS` minus 2. This engine budgets against
   `SL_COLUMNS`, which is `COLUMNS` minus 4, and `check.sh` fails any row wider
-  than that. Measured: every scenery row of `aquarium`, `kyoto` and `spectrum`
+  than that. Measured: every scenery row of `aquarium` and `kyoto`
   comes out exactly 2 cells over budget at every width, and **`vice` comes out
   at twice the budget** — 196 cells at 100 columns, 276 at 140 — because
   `vice.scene` builds its canvas from the pixel width rather than the text
   width. The bridge zeroes his padding, clamps vice's canvas, sheds tail
   segments from the text rows, and clips every row cell-accurately as a backstop.
-- **Determinism.** All four call `time.time()` in the render path and `vice`
+- **Determinism.** All three call `time.time()` in the render path and `vice`
   also calls `time.localtime()`. Two renders of the same second have to be
   byte-identical or the line flickers, so the bridge replaces the time module
   each one imported with a shim pinned to `SL_NOW`.
@@ -146,14 +149,14 @@ So the whole mechanism is out:
 
 `watergif.py` and `kyotogif.py` *do* ship, because the themes import them for
 art constants and two timing values, not to generate anything —
-`kyoto.py` does `import kyotogif as art` and pulls twenty names out of it, so
+`kyoto.py` does `import kyotogif as art` and pulls nineteen names out of it, so
 dropping it means kyoto does not render at all. Their `build_all` entry points
 are never wired to anything, and the `gifwriter` they would need is the stub,
 which raises rather than writing a file. Belt and braces: the bridge forces
 every `gif_mode()` to `False`, so the branches containing those calls are
 unreachable, and replaces the two sync functions with no-ops anyway.
 
-Verified, not asserted: 36 renders across all four themes and every pixel mode
+Verified, not asserted: 36 renders across all three themes and every pixel mode
 left `~/.claude/settings.json` and Windows Terminal's `settings.json`
 byte-identical, and created no `claude-statusline` directory.
 
@@ -163,7 +166,7 @@ the `LOOKS` table in `~/.claude/statusline/terminal-background.py`, which
 settings path, snapshots what it displaces *before* the first application, takes
 a timestamped backup, writes through a temp file and re-parses it before
 replacing the original. If one of these themes should get a window background,
-that is where the entry belongs. None of the four has one today, so switching to
+that is where the entry belongs. None of the three has one today, so switching to
 them resets the terminal to the plain look and properly restores whatever the
 previous theme had installed.
 
@@ -179,14 +182,16 @@ already has one, and running his would replace it.
 | `statusline.py` | his dispatcher; `statusline.sh` + `switch.sh` is this one |
 | `commands/sl.md` | replaces this framework's `/sl` command |
 
-They are kept under `upstream/` for reference. **Do not execute them.** They are
-stored without the execute bit for that reason.
+They are kept under `upstream/` for reference. **Do not execute them.** And note
+that nothing stops you: this tree is on a drvfs mount of `C:`, which reports
+every file as mode `777`, so the execute bit cannot be cleared here. The
+sentence you just read is the whole of the protection.
 
-### `water2` as a fifth theme
+### `water2` as a fourth theme
 
 His `water2` is not a separate theme — it is `water` at 2×4 octant pixel
 resolution, importing `water` for its physics, geometry, palette and info row.
-Shipping it as a fifth entry would put three reef scenes in a list that already
+Shipping it as a fourth entry would put three reef scenes in a list that already
 has a native `underwater` theme. It is exposed as a resolution knob instead:
 `SL_AQUARIUM_PIXELS=octant`, mirroring the `SL_KYOTO_PIXELS` / `SL_VICE_PIXELS`
 pattern his own themes use. `water2.py` ships unmodified and

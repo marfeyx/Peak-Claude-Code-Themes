@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Shared launcher for the four themes bridged from Livio's bundle.
+# Shared launcher for the three themes bridged from Livio's bundle.
 #
-# Sourced by themes/aquarium.sh, themes/kyoto.sh, themes/spectrum.sh and
+# Sourced by themes/aquarium.sh, themes/kyoto.sh and
 # themes/vice.sh, which differ only in which renderer they ask for and how tall
 # a panel they want. Everything that makes his Python safe and width-correct
 # lives in vendor/livio/render.py; this file only resolves the host data the
@@ -28,15 +28,16 @@ livio_rows() {
 }
 
 livio_render() {
-  local renderer="$1" output line spent limit
+  local renderer="$1" output line spent limit label
+  label="${SL_THEME:-$renderer}"
 
   if [ ! -f "$LIVIO_BRIDGE" ]; then
-    sl_emit "$(sl_fg256 204)${renderer}: missing vendor/livio/render.py${SL_RESET}"
+    sl_emit "$(sl_fg256 204)${label}: missing vendor/livio/render.py${SL_RESET}"
     return
   fi
 
   if ! command -v python3 >/dev/null 2>&1; then
-    sl_emit "$(sl_fg256 204)${renderer}: python3 not found${SL_RESET}"
+    sl_emit "$(sl_fg256 204)${label}: python3 not found${SL_RESET}"
     return
   fi
 
@@ -60,7 +61,7 @@ livio_render() {
     python3 -B "$LIVIO_BRIDGE" <<< "$SL_PAYLOAD" 2>/dev/null)"
 
   if [ -z "$output" ]; then
-    sl_emit "$(sl_fg256 204)${renderer}: the renderer produced nothing${SL_RESET}"
+    sl_emit "$(sl_fg256 204)${label}: the renderer produced nothing${SL_RESET}"
     return
   fi
 
