@@ -1,0 +1,90 @@
+# Claude Code status line themes
+
+Five status line themes for Claude Code, plus a `/sl` slash command to switch
+between them. Pure python3 stdlib — no pip install, no node, no jq.
+
+On Windows Terminal the scenery themes also drive the terminal background with
+pre-rendered animated GIFs, so the whole window becomes the scene instead of
+just the panel under your prompt.
+
+## The themes
+
+| `/sl <name>` | what you get |
+| --- | --- |
+| `water` | an aquarium whose water level is the context window you have left. The tank drains as the session fills up: pixel kelp, coral, rising bubbles and fish swimming past. When the water drops below the scenery it dies — kelp and coral bleach out, and fish with no room left to swim end up as skeletons on the sand. |
+| `water2` | the same aquarium at 2× pixel resolution, drawn with Unicode 16 octants. Needs an octant-capable font (CaskaydiaMono NF has them); if the scenery comes out as empty boxes, fall back to `water`. |
+| `kyoto` | a quiet spring valley — hills, a pagoda, a torii at the water's edge, a waterfall and the river across the foreground. Deliberately calm: the light never changes, nothing flashes, and the context meter is a branch coming into blossom rather than an alarm. |
+| `vice` | a GTA VI Vice City panorama with a live day-night cycle off your wall clock. The sun arcs across and sinks into the bay, stars come out, the skyline lights up window by window and the neon starts to pulse. Your context window is your wanted level: past four stars a police chopper sweeps the bay, at five the whole scene washes red and blue. |
+| `rgb` | three info rows under a drifting rainbow rule. Text only, no scenery — the quiet default. |
+
+## Install
+
+```bash
+./install.sh                  # into ~/.claude
+CLAUDE_DIR=/x ./install.sh    # somewhere else
+```
+
+Then, inside Claude Code:
+
+```
+/sl                   # list the themes, show the active one
+/sl kyoto             # switch
+/sl water full        # tank fills the window
+/sl water 14          # tank is 14 rows tall
+```
+
+`install.sh` backs up anything it overwrites as `*.bak-<timestamp>` and points
+`statusLine` in `~/.claude/settings.json` at the dispatcher. Uninstall by
+restoring the `.bak-*` files, or just `/sl rgb` to switch away from the scenery.
+
+## What you need
+
+- python3 (stdlib only)
+- a terminal with truecolor — without it the themes fall back to plain text
+- CaskaydiaMono NF or another font with Symbols for Legacy Computing
+  Supplement, for `water2` only
+- Windows Terminal + WSL, *only* for the full-screen backgrounds. Elsewhere you
+  get the panel, which is the whole theme minus the window-sized version.
+
+The first `/sl` into a scenery theme renders its background GIFs into
+`%LOCALAPPDATA%\claude-statusline`, once: `water` about 15 s (eleven bands, one
+per 10% of context), `kyoto` about 10 s (one band — the light is fixed), `vice`
+about 9 minutes (144 bands, one per ten minutes of the day). Your Windows
+Terminal profile is saved before it is touched and put back when you switch to a
+theme without a background.
+
+## Files
+
+| path | what it is |
+| --- | --- |
+| `statusline.py` | dispatcher; reads the theme name from `~/.claude/statusline-theme` |
+| `statuslines/water.py`, `water2.py` | the aquarium, at half-block and octant resolution |
+| `statuslines/kyoto.py` | the valley |
+| `statuslines/vice.py` | the bay, the day-night cycle, the wanted level |
+| `statuslines/rgb.py` | the text-only theme |
+| `statuslines/common.py` | `Canvas`, `Pixels`/`OctantPixels` pixel art, colour and formatting helpers |
+| `statuslines/octants.py` | generated 2×4 octant glyph table (sampled from CaskaydiaMono NF) |
+| `statuslines/gifwriter.py` | a minimal animated-GIF89a writer, pure stdlib |
+| `statuslines/watergif.py`, `kyotogif.py`, `vicegif.py` | render each theme's background GIFs |
+| `sl-water-bg.py` | points the Windows Terminal profile at the right GIF |
+| `sl-switch.sh` + `commands/sl.md` | the `/sl` slash command |
+
+## Poking at it
+
+- `SL_THEME=kyoto` picks the theme for one session without switching.
+- `SL_WATER_HEIGHT` / `SL_KYOTO_HEIGHT` / `SL_VICE_HEIGHT` = rows, or `full`,
+  override the height for one session.
+- `SL_KYOTO_PIXELS=half` / `SL_VICE_PIXELS=half` drop back to half-block
+  resolution if the octant glyphs come out as boxes.
+- `SL_VICE_HOUR=21.5` pins vice's time of day; `SL_VICE_TIMELAPSE=60` runs a
+  whole day in sixty seconds.
+- `SL_DEBUG=1` re-raises a theme error instead of printing it in the panel.
+- Write a number into `~/.claude/statusline-water-pct` to pin the tank at that
+  context percentage, or the word `partial` to see the half-drained, half-dead
+  state. Delete the file to go back to live. (While it exists the `ctx NN%` in
+  the info row is the faked number.)
+- `python3 sl-water-bg.py status` says which GIF is applied and where they live;
+  `restore` puts the Windows Terminal profile back.
+
+Every theme has a weekly-spend segment that reads a local
+`~/.local/bin/build-cli` binary; without it that segment just stays hidden.

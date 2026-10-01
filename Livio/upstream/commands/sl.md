@@ -1,0 +1,11 @@
+---
+allowed-tools: Bash(__CLAUDE_DIR__/sl-switch.sh:*)
+argument-hint: "[rgb | kyoto | vice | water | water2 [rows|full|auto]]"
+description: Switch the status line theme
+---
+
+!`__CLAUDE_DIR__/sl-switch.sh "$ARGUMENTS"`
+
+Relay the output above to the user in one short line. If a theme was switched,
+mention that the new one appears on the next status line refresh (within a
+second). Do not call any tools.
