@@ -15,7 +15,7 @@ set -u
 
 CHECK_HOME="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 CHECK_PAYLOAD="$CHECK_HOME/sample-payload.json"
-CHECK_WIDTHS=(60 80 100 160 220)
+CHECK_WIDTHS=(30 40 50 60 80 100 160 220)
 CHECK_FAILURES=0
 
 check_theme() {

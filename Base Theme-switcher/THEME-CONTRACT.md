@@ -31,8 +31,9 @@ sl_render() {
 }
 ```
 
-The header keys are parsed by `switch.sh` for the theme list. `@order` decides the number a theme
-answers to in `/sl <number>`; it survives renames because it lives in the file.
+The header keys are parsed by `switch.sh` for the theme list. `@order` decides where a theme
+sorts; `/sl <number>` takes the theme's position in that sorted list. It survives renames
+because it lives in the file.
 
 ### Rules
 

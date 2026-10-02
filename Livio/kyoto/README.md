@@ -216,7 +216,7 @@ cp kyoto.py kyotogif.py ~/.claude/statusline/vendor/livio/
 cp kyoto.sh ~/.claude/statusline/themes/
 ```
 
-Then `/sl kyoto`, or `/sl 41` from the `@order: 41` header.
+Then `/sl kyoto`, or its number in the `/sl` list (`@order: 41` decides where it sorts).
 
 Check it:
 

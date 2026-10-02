@@ -216,8 +216,8 @@ cp water.py water2.py watergif.py ~/.claude/statusline/vendor/livio/
 cp aquarium.sh ~/.claude/statusline/themes/
 ```
 
-Then `/sl aquarium`, or `/sl 40` — the number comes from `@order: 40` in the
-file's header and survives a rename.
+Then `/sl aquarium`, or its number in the `/sl` list — `@order: 40` in the
+file's header decides where it sorts and survives a rename.
 
 Check it:
 

@@ -81,12 +81,18 @@ sl_is_number() {
   esac
 }
 
+declare -gA SL_CHAR_WIDTH=()
+
 sl_width() {
   local text="$1" total=0 position code char
   case "$text" in
     *[!$'\x20'-$'\x7e']*) ;;
     *) SL_W="${#text}"; return ;;
   esac
+  if [ "${#text}" = "1" ] && [ -n "${SL_CHAR_WIDTH[$text]:-}" ]; then
+    SL_W="${SL_CHAR_WIDTH[$text]}"
+    return
+  fi
   for (( position = 0; position < ${#text}; position++ )); do
     char="${text:position:1}"
     printf -v code '%d' "'$char" 2>/dev/null || code=63
@@ -107,6 +113,8 @@ sl_width() {
     fi
   done
   SL_W="$total"
+  [ "${#text}" = "1" ] && SL_CHAR_WIDTH["$text"]="$total"
+  return 0
 }
 
 sl_trunc() {
@@ -826,14 +834,40 @@ sl_token_burn() {
 
 SL_LINES=()
 
+# Claude Code trims every line of a statusline command's output and drops the
+# lines that are empty afterwards, so a line may neither begin with whitespace
+# nor be blank. A leading SGR reset costs no cell, survives the trim and keeps
+# column 0 where the theme put it.
+sl_line_guard() {
+  SL_LINE="$1"
+  [ "$SL_USE_COLOR" = "1" ] || return 0
+  case "$SL_LINE" in
+    ''|[[:space:]]*) SL_LINE="${SL_ESC}[m$SL_LINE" ;;
+  esac
+}
+
 sl_emit() {
   local text="$1"
   sl_clip "$text" "$SL_COLUMNS"
-  SL_LINES+=("$SL_CLIP")
+  sl_line_guard "$SL_CLIP"
+  SL_LINES+=("$SL_LINE")
+}
+
+# Emits a line whose visible width the caller already knows. Clipping an
+# ANSI-heavy line costs a pass over every escape byte, which a pixel-art theme
+# pays on every row of every frame, so a line that provably fits skips it.
+sl_emit_sized() {
+  if [ "${2:-$(( SL_COLUMNS + 1 ))}" -le "$SL_COLUMNS" ]; then
+    sl_line_guard "$1"
+    SL_LINES+=("$SL_LINE")
+    return 0
+  fi
+  sl_emit "$1"
 }
 
 sl_emit_raw() {
-  SL_LINES+=("$1")
+  sl_line_guard "$1"
+  SL_LINES+=("$SL_LINE")
 }
 
 sl_flush() {

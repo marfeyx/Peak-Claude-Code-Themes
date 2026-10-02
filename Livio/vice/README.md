@@ -254,7 +254,7 @@ cp vice.py ~/.claude/statusline/vendor/livio/
 cp vice.sh ~/.claude/statusline/themes/
 ```
 
-Then `/sl vice`, or `/sl 42` from the `@order: 42` header.
+Then `/sl vice`, or its number in the `/sl` list (`@order: 42` decides where it sorts).
 
 Check it:
 

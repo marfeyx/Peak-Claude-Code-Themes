@@ -6,9 +6,9 @@ folder that is not his is the layer that makes them fit this repo's engine.
 
 | `/sl` | theme | what it is |
 |---|---|---|
-| `/sl 40` | [`aquarium`](aquarium/) | a tank whose water level is the context window you have left |
-| `/sl 41` | [`kyoto`](kyoto/) | a calm Kyoto valley — sakura, a waterfall, a slow river |
-| `/sl 42` | [`vice`](vice/) | a Vice City panorama on a day-night cycle, context as a wanted level |
+| `/sl aquarium` | [`aquarium`](aquarium/) | a tank whose water level is the context window you have left |
+| `/sl kyoto` | [`kyoto`](kyoto/) | a calm Kyoto valley — sakura, a waterfall, a slow river |
+| `/sl vice` | [`vice`](vice/) | a Vice City panorama on a day-night cycle, context as a wanted level |
 
 All three pass `check.sh` with **zero failing checks** at 30, 40, 50, 60, 80, 100,
 160 and 220 columns plus `NO_COLOR`.

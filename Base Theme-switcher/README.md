@@ -75,8 +75,9 @@ sl_render() {
 }
 ```
 
-`@order` fixes the number the theme answers to in `/sl <number>`, and survives renames
-because it lives in the file rather than in an index. Every line `sl_emit` produces is
+`@order` fixes where the theme sorts in the list, and survives renames because it lives in
+the file rather than in an index. The number `/sl <number>` takes is the theme's position in
+that sorted list, not its `@order` value. Every line `sl_emit` produces is
 clipped to the terminal width, so a theme can never wrap your prompt.
 
 ## Install
@@ -185,8 +186,8 @@ Four rules that cause most of the breakage:
 ~/.claude/statusline/check.sh --all
 ```
 
-`check.sh` renders the theme against `sample-payload.json` at 60, 80, 100, 160 and 220
-columns, plus once at 100 with `NO_COLOR` set, and fails on:
+`check.sh` renders the theme against `sample-payload.json` at 30, 40, 50, 60, 80, 100, 160
+and 220 columns, plus once at 100 with `NO_COLOR` set, and fails on:
 
 - a non-zero exit status
 - anything written to stderr
@@ -247,22 +248,20 @@ acrylic, opacity, pixel shader. On macOS, Linux without WSL, iTerm, Alacritty, K
 anything else, it finds no such file and does nothing. The status line itself is entirely
 unaffected; you just do not get the matching window.
 
-**It also hardcodes a path.** The `SETTINGS` constant near the top of
-`terminal-background.py` points at one specific Windows user profile. If you are on WSL and
-want this to work, open the installed copy at
-`~/.claude/statusline/terminal-background.py` and change that path to your own Windows
-username. This file is shipped byte-identical to the author's, deliberately — it is a
-reference, not a portable tool.
+**It finds the settings file itself, on the default WSL mount.** `terminal-background.py`
+looks for `/mnt/c/Users/*/AppData/Local/Packages/Microsoft.WindowsTerminal*/LocalState/settings.json`,
+so no username or profile is baked in. If your C: drive is mounted somewhere else, or you
+run more than one Windows Terminal package, point `SL_WT_SETTINGS` at the right file. It
+writes to `profiles.defaults`, takes a timestamped backup first, and refuses a file that
+contains `//` comments rather than silently dropping them.
 
-**`erase-prompt-border.hlsl` is Windows Terminal only, and optional.** It is a pixel shader
-that replaces a sentinel magenta — the colour Claude Code paints its input-field border —
-with a clone of the terminal a few rows away, so the rules above and below the prompt
-disappear into whatever is actually behind them. That matters on a translucent window,
-where simply painting over them leaves a solid streak. `install.sh` does not install it.
-Copy it next to your Windows Terminal `settings.json` and set
-`profiles.defaults.experimental.pixelShaderPath` yourself, or let
-`terminal-background.py` do it once you have fixed its path. Everything works without it;
-you just see the border.
+**`erase-prompt-border.hlsl` is Windows Terminal only.** It is a pixel shader that replaces
+a sentinel magenta — the colour Claude Code paints its input-field border — with a clone of
+the terminal a few rows away, so the rules above and below the prompt disappear into
+whatever is actually behind them. That matters on a translucent window, where simply
+painting over them leaves a solid streak. `install.sh` installs it with the other shaders,
+and `terminal-background.py` applies it as part of the plain look used by every theme that
+does not bring its own shader. Everything works without it; you just see the border.
 
 **One theme bundled.** `purple` ships here so a fresh install renders immediately. The rest
 live in the person folders of this repo.

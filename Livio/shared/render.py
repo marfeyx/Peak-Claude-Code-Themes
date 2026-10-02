@@ -75,7 +75,7 @@ process.
 Environment, all set by the themes/*.sh wrappers:
   COLUMNS              the width budget, in cells
   SL_USE_COLOR         0 to ask for the fallback and strip every escape
-  SL_LIVIO_THEME       water, water2, kyoto, vice or rgb
+  SL_LIVIO_THEME       water, water2, kyoto or vice
   SL_LIVIO_NOW         epoch seconds driving every animation
   SL_LIVIO_ROWS        requested panel height in rows
   SL_LIVIO_BRANCH      git branch, already resolved by the host
@@ -98,7 +98,7 @@ SGR = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 ZERO_WIDTH_SPACE = "​"
 RESET = "\x1b[0m"
 
-THEMES = ("water", "water2", "kyoto", "vice", "rgb")
+THEMES = ("water", "water2", "kyoto", "vice")
 PANEL_THEMES = ("water", "water2", "kyoto", "vice")
 HEIGHT_VARIABLE = {"water": "SL_WATER_HEIGHT", "water2": "SL_WATER_HEIGHT",
                    "kyoto": "SL_KYOTO_HEIGHT", "vice": "SL_VICE_HEIGHT"}
@@ -228,8 +228,6 @@ def _clamped_canvas(base, limit):
 
 
 def _separator(common, module, name):
-    if name == "rgb":
-        return getattr(module, "SEP", "")
     if name in ("water", "water2"):
         return common.c(common.DIM, "  ·  ")
     return ""
